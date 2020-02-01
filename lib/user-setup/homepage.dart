@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:justhomm/common/api.dart';
-import 'package:justhomm/other-pages/profile.dart';
 import 'package:justhomm/user-setup/login.dart';
 import 'package:justhomm/user-setup/signup.dart';
 import 'package:double_back_to_close_app/double_back_to_close_app.dart';

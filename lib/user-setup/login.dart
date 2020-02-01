@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:justhomm/common/common.dart';
 import 'package:justhomm/user-setup/forgotpassword.dart';
-import 'package:justhomm/other-pages/profile.dart';
 import 'package:justhomm/user-setup/signup.dart';
 import 'package:justhomm/common/api.dart';
 import 'package:justhomm/user-setup/userrole.dart';

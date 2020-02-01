@@ -2,7 +2,6 @@ import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:justhomm/common/common.dart';
-import 'package:justhomm/other-pages/profile.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 class SidebarCustomer extends StatefulWidget {
