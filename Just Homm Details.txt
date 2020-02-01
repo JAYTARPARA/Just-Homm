@@ -1,0 +1,30 @@
+git init
+git remote add origin https://github.com/JAYTARPARA/Just-Homm.git
+
+flutter pub run flutter_launcher_icons:main -f pubspec.yaml
+
+LINK - http://192.168.0.106:8000
+
+LOGIN - https://frappe.io/docs/user/en/guides/integration/rest_api/simple_authentication
+
+LOGIN - https://desk.justhomm.com/api/method/login
+
+LOGOUT - https://desk.justhomm.com/api/method/logout
+
+GET OTP - https://desk.justhomm.com/api/method/justhomm.api.get_otp
+
+VERIFY OTP - https://desk.justhomm.com/api/method/justhomm.api.verify_otp?mobile_no=7359646977&otp=123
+
+GET ALL PROPERTIES - https://desk.justhomm.com/api/method/justhomm.api.get_property
+
+GET SINGLE PROPERTY - https://desk.justhomm.com/api/resource/Property/property_id
+
+GET LOGGED IN USER - https://desk.justhomm.com/api/method/frappe.auth.get_logged_user
+
+USER PROFILE
+update_user_profile(first_name="", middel_name="", last_name="", address="", gender="", dob="", email="")
+
+
+FORGOT PASSWORD - https://desk.justhomm.com/api/method/justhomm.api.forget_password?mobile_no=9106141050
+
+{first_name: null, last_name: null, modified_by: 9824868568@justhomm.in, name: USRPRFL-0000000002, parent: null, gender: null, dob: null, naming_series: USRPRFL-.##########, creation: 2020-01-31 17:31:12.342481, modified: 2020-01-31 18:04:13.533208, middel_name: null, doctype: Justhomm User Profile, idx: 0, parenttype: null, user: 9824868568@justhomm.in, address: null, owner: 9824868568@justhomm.in, docstatus: 0, email: null, parentfield: null}
