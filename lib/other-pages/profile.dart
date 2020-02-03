@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:justhomm/common/api.dart';
 import 'package:justhomm/common/common.dart';
+import 'package:justhomm/main.dart';
 import 'package:justhomm/sidebar/sidebar-broker.dart';
 import 'package:justhomm/sidebar/sidebar-customer.dart';
+import 'package:justhomm/user-setup/homepage.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:intl/intl.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
@@ -92,6 +94,9 @@ class _ProfileState extends State<Profile> {
         context,
         "/home",
         (r) => false,
+        arguments: HomePage(
+          functionCall: '1',
+        ),
       );
     } else {
       Timer(new Duration(seconds: 1), () async {
@@ -686,7 +691,7 @@ class _ProfileState extends State<Profile> {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.home),
-        backgroundColor: Colors.red,
+        backgroundColor: JustHomm().homeButton,
         elevation: 15.0,
         onPressed: () {
           Navigator.pushNamedAndRemoveUntil(

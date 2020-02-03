@@ -13,7 +13,10 @@ import 'package:justhomm/common/common.dart';
 class HomePage extends StatefulWidget {
   final String mobile;
   final String functionCall;
-  HomePage({this.mobile});
+  HomePage({
+    this.mobile,
+    this.functionCall,
+  });
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -31,7 +34,9 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero, this.checkIfUserLoggedin);
+    if (widget.functionCall == null) {
+      Future.delayed(Duration.zero, this.checkIfUserLoggedin);
+    }
   }
 
   @override
@@ -39,8 +44,7 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
-  checkIfUserLoggedin() async {
-    print('Function called');
+  showLoggedOutMessage() async {
     responseLoggedOut = await Common().readData('loggedout');
     if (responseLoggedOut != '') {
       final snackBar = SnackBar(
@@ -58,6 +62,11 @@ class _HomePageState extends State<HomePage> {
         );
       });
     }
+  }
+
+  checkIfUserLoggedin() async {
+    print('Function called');
+    showLoggedOutMessage();
     pr = new ProgressDialog(
       context,
       type: ProgressDialogType.Normal,
@@ -110,6 +119,10 @@ class _HomePageState extends State<HomePage> {
               }
             });
           }
+        });
+      } else if (responseLoggedin == '') {
+        Timer(new Duration(seconds: 1), () {
+          pr.hide();
         });
       } else {
         Timer(new Duration(seconds: 1), () {

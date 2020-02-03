@@ -157,4 +157,40 @@ class API {
       return 'error';
     }
   }
+
+  changePassword(password) async {
+    apiSendURL = '$apiURL/api/method/frappe.auth.get_logged_user';
+    responseCookie = await Common().readData('sid');
+    Map<String, String> headers = {
+      "Content-type": "application/json",
+      "Accept": "application/json",
+      "Cookie": "sid$responseCookie;",
+    };
+    var body = jsonEncode({'new_password': '$password'});
+    try {
+      response = await http.get(apiSendURL, headers: headers);
+      // print(response.body);
+      var userID = jsonDecode(response.body)['message'];
+      var apiSendURLPassword = '$apiURL/api/resource/User/$userID';
+
+      var responseUpdatePassword =
+          await http.put(apiSendURLPassword, headers: headers, body: body);
+      // print(jsonDecode(responseUpdatePassword.body)['data']);
+      return jsonDecode(responseUpdatePassword.body);
+    } catch (e) {
+      return 'error';
+    }
+  }
+
+  getAllProperties() async {
+    apiSendURL = '$apiURL/api/method/justhomm.api.get_property';
+    responseCookie = await Common().readData('sid');
+    Map<String, String> headers = {"Cookie": "sid$responseCookie;"};
+    try {
+      response = await http.get(apiSendURL, headers: headers);
+      return jsonDecode(response.body);
+    } catch (e) {
+      return 'error';
+    }
+  }
 }

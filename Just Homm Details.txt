@@ -27,6 +27,11 @@ update_user_profile(first_name="", middel_name="", last_name="", address="", gen
 
 FORGOT PASSWORD - https://desk.justhomm.com/api/method/justhomm.api.forget_password?mobile_no=9106141050
 
-{first_name: null, last_name: null, modified_by: 9824868568@justhomm.in, name: USRPRFL-0000000002, parent: null, gender: null, dob: null, naming_series: USRPRFL-.##########, creation: 2020-01-31 17:31:12.342481, modified: 2020-01-31 18:04:13.533208, middel_name: null, doctype: Justhomm User Profile, idx: 0, parenttype: null, user: 9824868568@justhomm.in, address: null, owner: 9824868568@justhomm.in, docstatus: 0, email: null, parentfield: null}
+UPDATE PASSWORD - https://frappe.io/docs/user/en/guides/integration/rest_api
 
-Scroll profile page when keyboard open
+arguments: UserRole(
+                mobile: widget.mobile,
+              ),
+			  
+			  
+{"message":[{"project_name":"Dhanmora Complex","name":"PRPT-YYYY-000000001","location":"Katargam","property_type":"Bunglow","_user_tags":",4BHK,2BHK,1BHK","thumbnail":"/files/pexels-photo-1546168-1024x576 2020-01-27 19:18:28.jpeg"}]}

@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:justhomm/common/common.dart';
 import 'package:justhomm/user-setup/forgotpassword.dart';
+import 'package:justhomm/user-setup/homepage.dart';
 import 'package:justhomm/user-setup/signup.dart';
 import 'package:justhomm/common/api.dart';
 import 'package:justhomm/user-setup/userrole.dart';
@@ -62,7 +63,14 @@ class _LoginState extends State<Login> {
       ),
       body: WillPopScope(
         onWillPop: () async {
-          Navigator.pushNamedAndRemoveUntil(context, "/home", (r) => false);
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            "/home",
+            (r) => false,
+            arguments: HomePage(
+              functionCall: '1',
+            ),
+          );
           // return true;
         },
         child: SingleChildScrollView(

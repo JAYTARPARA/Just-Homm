@@ -25,7 +25,7 @@ class _SidebarCustomerState extends State<SidebarCustomer> {
     return Drawer(
       child: ListView(
         children: <Widget>[
-          _createHeader(userMobile),
+          _createHeader(userMobile, context),
           _customerMenu(context),
         ],
       ),
@@ -83,10 +83,10 @@ Widget _customerMenu(context) {
           ),
           onTap: () {
             String currentPage = ModalRoute.of(context).settings.name;
-            if (currentPage != '/profile') {
+            if (currentPage != '/change-password') {
               Navigator.pushNamedAndRemoveUntil(
                 context,
-                "/profile",
+                "/change-password",
                 (r) => false,
               );
             } else {
@@ -227,7 +227,7 @@ Widget _customerMenu(context) {
   );
 }
 
-Widget _createHeader(userMobile) {
+Widget _createHeader(userMobile, context) {
   return Container(
     height: 200.0,
     child: DrawerHeader(
@@ -259,6 +259,16 @@ Widget _createHeader(userMobile) {
               foregroundColor: Colors.black87.withOpacity(0.5),
               onTap: () {
                 print('pressed on icon');
+                String currentPage = ModalRoute.of(context).settings.name;
+                if (currentPage != '/profile') {
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    "/profile",
+                    (r) => false,
+                  );
+                } else {
+                  Navigator.of(context).pop();
+                }
               },
               showInitialTextAbovePicture: true,
             ),

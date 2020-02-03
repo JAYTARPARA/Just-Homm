@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:justhomm/user-setup/homepage.dart';
 import 'package:justhomm/user-setup/login.dart';
 import 'package:justhomm/user-setup/otp.dart';
 import 'package:justhomm/common/api.dart';
@@ -45,7 +46,14 @@ class _SignupState extends State<Signup> {
       ),
       body: WillPopScope(
         onWillPop: () async {
-          Navigator.pushNamedAndRemoveUntil(context, "/home", (r) => false);
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            "/home",
+            (r) => false,
+            arguments: HomePage(
+              functionCall: '1',
+            ),
+          );
           // return true;
         },
         child: SingleChildScrollView(
