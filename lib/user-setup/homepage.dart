@@ -12,6 +12,7 @@ import 'package:justhomm/common/common.dart';
 
 class HomePage extends StatefulWidget {
   final String mobile;
+  final String functionCall;
   HomePage({this.mobile});
 
   @override

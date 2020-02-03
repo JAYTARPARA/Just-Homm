@@ -182,7 +182,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => Login(),
+                                        builder: (context) => Login(
+                                          mobile: _mobile.text,
+                                        ),
                                       ),
                                     );
                                   });
