@@ -193,4 +193,17 @@ class API {
       return 'error';
     }
   }
+
+  getPropertyDetails(propertyId) async {
+    apiSendURL = '$apiURL/api/resource/Property/$propertyId';
+    responseCookie = await Common().readData('sid');
+    print(responseCookie);
+    Map<String, String> headers = {"Cookie": "sid$responseCookie;"};
+    try {
+      response = await http.get(apiSendURL, headers: headers);
+      return jsonDecode(response.body);
+    } catch (e) {
+      return 'error';
+    }
+  }
 }

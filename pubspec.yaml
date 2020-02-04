@@ -38,6 +38,7 @@ dependencies:
   flutter_form_builder: ^3.7.3
   datetime_picker_formfield: ^1.0.0
   email_validator: '^1.0.0'
+  font_awesome_flutter: ^8.5.0
 
 dev_dependencies:
   flutter_test:

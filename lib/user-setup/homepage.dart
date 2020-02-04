@@ -33,9 +33,21 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
+    pr = new ProgressDialog(
+      context,
+      type: ProgressDialogType.Normal,
+      isDismissible: false,
+    );
     super.initState();
     if (widget.functionCall == null) {
       Future.delayed(Duration.zero, this.checkIfUserLoggedin);
+    } else {
+      Future.delayed(Duration.zero, this.showLoggedOutMessage);
+      Timer(new Duration(seconds: 1), () async {
+        if (pr.isShowing()) {
+          pr.hide();
+        }
+      });
     }
   }
 
@@ -45,6 +57,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   showLoggedOutMessage() async {
+    print('Logout Function called');
     responseLoggedOut = await Common().readData('loggedout');
     if (responseLoggedOut != '') {
       final snackBar = SnackBar(
@@ -66,12 +79,9 @@ class _HomePageState extends State<HomePage> {
 
   checkIfUserLoggedin() async {
     print('Function called');
-    showLoggedOutMessage();
-    pr = new ProgressDialog(
-      context,
-      type: ProgressDialogType.Normal,
-      isDismissible: false,
-    );
+    Timer(new Duration(seconds: 1), () async {
+      showLoggedOutMessage();
+    });
     pr.style(
       message: 'Please wait...',
     );

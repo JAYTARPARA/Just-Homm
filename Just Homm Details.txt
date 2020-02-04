@@ -34,4 +34,23 @@ arguments: UserRole(
               ),
 			  
 			  
-{"message":[{"project_name":"Dhanmora Complex","name":"PRPT-YYYY-000000001","location":"Katargam","property_type":"Bunglow","_user_tags":",4BHK,2BHK,1BHK","thumbnail":"/files/pexels-photo-1546168-1024x576 2020-01-27 19:18:28.jpeg"}]}
+{"data":
+{"naming_series":"PRPT-YYYY-.#########","creation":"2020-01-27 19:17:50.230111","doctype":"Property","_liked_by":"[\"jigartarpara68@gmail.com\"]","owner":"jigartarpara68@gmail.com","property_type":"Bunglow","modified_by":"jigartarpara68@gmail.com","location":"Katargam","latitude":"21.2243865579304","docstatus":0,"thumbnail":"/files/pexels-photo-1546168-1024x576 2020-01-27 19:18:28.jpeg",
+"map":"{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"properties\":{},\"geometry\":{\"type\":\"Point\",\"coordinates\":[72.827259,21.223927]}}]}",
+"project_name":"Dhanmora Complex","min_budget":10000000.0,"_user_tags":",4BHK,2BHK,1BHK","project_master_file":[{"modified_by":"jigartarpara68@gmail.com","name":"f8104957cc","parent":"PRPT-YYYY-000000001","creation":"2020-01-27 19:17:50.230111","modified":"2020-01-27 19:20:38.082462","doctype":"Project Master FIle","idx":1,"parenttype":"Property","file":"/files/Product-overview.pdf","owner":"jigartarpara68@gmail.com","docstatus":0,"subject":"Master FIle","parentfield":"project_master_file"}],
+"property_photo":
+[{"modified_by":"jigartarpara68@gmail.com","name":"ce2615ab34","parent":"PRPT-YYYY-000000001","image":"/files/Bali-Beach-Sunset-27-HD-Wallpaper.jpg","creation":"2020-01-27 19:17:50.230111","modified":"2020-01-27 19:20:38.082462","doctype":"Property Photo","idx":1,"parenttype":"Property","owner":"jigartarpara68@gmail.com","docstatus":0,"type":"Outer","parentfield":"property_photo"},{"modified_by":"jigartarpara68@gmail.com","name":"a4eac41e88","parent":"PRPT-YYYY-000000001","image":"/files/homepage-hero-video-poster.4e4b0e5e.jpg","creation":"2020-01-27 19:17:50.230111","modified":"2020-01-27 19:20:38.082462","doctype":"Property Photo","idx":2,"parenttype":"Property","owner":"jigartarpara68@gmail.com","docstatus":0,"type":"Inner","parentfield":"property_photo"}],
+"name":"PRPT-YYYY-000000001","idx":0,"modified":"2020-01-27 19:20:38.082462","longitude":"72.8268322348595","max_budget":30000000.0,"project_address":"Dhanmora Complex-Billing"}
+}
+
+
+property_type
+project_address
+map-coordinates
+min_budget
+max_budget
+_user_tags
+file
+property_photo-image
+latitude
+longitude

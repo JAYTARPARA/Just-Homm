@@ -2,8 +2,11 @@ import 'dart:async';
 
 import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:justhomm/common/api.dart';
 import 'package:justhomm/common/common.dart';
+import 'package:justhomm/main.dart';
+import 'package:justhomm/property/property_details.dart';
 import 'package:justhomm/sidebar/sidebar-broker.dart';
 import 'package:justhomm/sidebar/sidebar-customer.dart';
 import 'package:global_configuration/global_configuration.dart';
@@ -28,18 +31,6 @@ class PropertyList extends StatefulWidget {
 
   @override
   _PropertyListState createState() => _PropertyListState();
-
-  // factory PropertyList.fromJson(List<dynamic> parsedJson) {
-  // print(parsedJson);
-  // return PropertyList(
-  //   project_name: parsedJson['project_name'],
-  //   name: parsedJson['name'],
-  //   location: parsedJson['location'],
-  //   property_type: parsedJson['property_type'],
-  //   user_tags: parsedJson['_user_tags'],
-  //   thumbnail: parsedJson['thumbnail'],
-  // );
-  // }
 }
 
 class _PropertyListState extends State<PropertyList> {
@@ -50,6 +41,9 @@ class _PropertyListState extends State<PropertyList> {
   var responsePropertyData;
   PropertyList propertyList;
   List<PropertyList> propertyItems = [];
+  ScrollController _scrollController;
+  bool _isOnTop = true;
+  bool doSplit = true;
 
   @override
   void initState() {
@@ -61,6 +55,42 @@ class _PropertyListState extends State<PropertyList> {
     );
     responseUserRole = GlobalConfiguration().getString("role");
     Future.delayed(Duration.zero, this.checkUser);
+    _scrollController = ScrollController();
+    _scrollController.addListener(() {
+      if (_scrollController.position.userScrollDirection ==
+          ScrollDirection.reverse) {
+        setState(() {
+          _isOnTop = false;
+          doSplit = false;
+        });
+      } else {
+        if (_scrollController.position.userScrollDirection ==
+            ScrollDirection.forward) {
+          setState(() {
+            _isOnTop = false;
+            doSplit = false;
+          });
+        }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
+  }
+
+  _scrollToTop() {
+    _scrollController.animateTo(
+      _scrollController.position.minScrollExtent,
+      duration: Duration(milliseconds: 500),
+      curve: Curves.easeIn,
+    );
+    setState(() {
+      _isOnTop = true;
+      doSplit = false;
+    });
   }
 
   checkUser() async {
@@ -107,11 +137,10 @@ class _PropertyListState extends State<PropertyList> {
           ),
         );
       }
-      setState(() {});
+      setState(() {
+        // doSplit = false;
+      });
     }
-    // if (responsePropertyData != null) {
-    //   propertyList = PropertyList.fromJson(responsePropertyData['message']);
-    // }
   }
 
   @override
@@ -146,13 +175,17 @@ class _PropertyListState extends State<PropertyList> {
         ),
         child: responsePropertyData != null
             ? ListView.builder(
+                controller: _scrollController,
+                shrinkWrap: true,
                 itemCount: propertyItems.length,
                 itemBuilder: (context, index) {
                   final property = propertyItems[index];
-                  if (property.user_tags != null) {
-                    property.user_tags = property.user_tags.substring(1);
-                  } else {
-                    property.user_tags = 'N/A';
+                  if (doSplit) {
+                    if (property.user_tags != null) {
+                      property.user_tags = property.user_tags.substring(1);
+                    } else {
+                      property.user_tags = 'N/A';
+                    }
                   }
                   return Padding(
                     padding: const EdgeInsets.symmetric(
@@ -188,15 +221,27 @@ class _PropertyListState extends State<PropertyList> {
                               )
                             : Padding(padding: EdgeInsets.all(0.0)),
                         SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.55,
+                          height: MediaQuery.of(context).size.height * 0.56,
                           child: PageView(
                             children: <Widget>[
                               GestureDetector(
                                 onTap: () {
-                                  print(property.name);
+                                  setState(() {
+                                    doSplit = false;
+                                  });
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => PropertyDetails(
+                                        propertyId: property.name,
+                                        propertyName: property.project_name,
+                                        coverImage: property.thumbnail,
+                                      ),
+                                    ),
+                                  );
                                 },
                                 child: Card(
-                                  color: Colors.white24,
+                                  color: Colors.white54,
                                   margin: EdgeInsets.only(
                                     left: 8,
                                     right: 8,
@@ -204,7 +249,7 @@ class _PropertyListState extends State<PropertyList> {
                                   ),
                                   elevation: 8,
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(32),
+                                    borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Column(
                                     crossAxisAlignment:
@@ -212,10 +257,10 @@ class _PropertyListState extends State<PropertyList> {
                                     children: <Widget>[
                                       ClipRRect(
                                         borderRadius: BorderRadius.vertical(
-                                            top: Radius.circular(32)),
+                                          top: Radius.circular(8),
+                                        ),
                                         child: Image.network(
-                                          'https://desk.justhomm.com' +
-                                              property.thumbnail,
+                                          API().apiURL + property.thumbnail,
                                           height: MediaQuery.of(context)
                                                   .size
                                                   .height *
@@ -229,9 +274,9 @@ class _PropertyListState extends State<PropertyList> {
                                       Padding(
                                         padding:
                                             const EdgeInsets.only(left: 10.0),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
                                           children: <Widget>[
                                             Text(
                                               property.project_name
@@ -240,6 +285,15 @@ class _PropertyListState extends State<PropertyList> {
                                                 fontSize: 20,
                                                 fontWeight: FontWeight.bold,
                                               ),
+                                            ),
+                                            IconButton(
+                                              icon: Icon(
+                                                Icons.favorite_border,
+                                                color: Colors.red,
+                                              ),
+                                              onPressed: () {
+                                                print('Favourite pressed');
+                                              },
                                             ),
                                           ],
                                         ),
@@ -259,7 +313,9 @@ class _PropertyListState extends State<PropertyList> {
                                             Text(
                                               property.location,
                                               style: TextStyle(
-                                                fontSize: 16.0,
+                                                fontSize: 17.0,
+                                                fontWeight: FontWeight.w500,
+                                                color: Colors.black87,
                                               ),
                                             ),
                                           ],
@@ -280,7 +336,9 @@ class _PropertyListState extends State<PropertyList> {
                                             Text(
                                               property.user_tags,
                                               style: TextStyle(
-                                                fontSize: 16.0,
+                                                fontSize: 17.0,
+                                                fontWeight: FontWeight.w500,
+                                                color: Colors.black87,
                                               ),
                                             ),
                                           ],
@@ -304,6 +362,27 @@ class _PropertyListState extends State<PropertyList> {
                 ),
               ),
       ),
+      floatingActionButton: Visibility(
+        visible: !_isOnTop,
+        child: FloatingActionButton(
+          onPressed: !_isOnTop ? _scrollToTop : null,
+          child: Icon(Icons.home),
+          backgroundColor: JustHomm().homeButton,
+        ),
+      ),
+      // bottomNavigationBar: BottomNavigationBar(
+      //   currentIndex: 0,
+      //   items: [
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.home),
+      //       title: Text('All Properties'),
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.local_offer),
+      //       title: Text('Advertisory Properties'),
+      //     ),
+      //   ],
+      // ),
     );
   }
 }
