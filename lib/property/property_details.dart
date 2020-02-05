@@ -1,6 +1,14 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:justhomm/common/api.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:justhomm/main.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 class PropertyDetails extends StatefulWidget {
   final String propertyId;
@@ -35,12 +43,61 @@ class _PropertyDetailsState extends State<PropertyDetails> {
   String location;
   RegExp reg = new RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))');
   Function mathFunc = (Match match) => '${match[1]},';
+  bool _isLoading;
+  bool _permissionReady;
+  String _localPath;
 
   @override
   void initState() {
     super.initState();
     propertyName = widget.propertyName;
     Future.delayed(Duration.zero, this.getPropertyDetails);
+    _isLoading = true;
+    _permissionReady = false;
+    _prepare();
+  }
+
+  Future<bool> _checkPermission() async {
+    if (Platform.isAndroid) {
+      PermissionStatus permission = await PermissionHandler()
+          .checkPermissionStatus(PermissionGroup.storage);
+      if (permission != PermissionStatus.granted) {
+        Map<PermissionGroup, PermissionStatus> permissions =
+            await PermissionHandler()
+                .requestPermissions([PermissionGroup.storage]);
+        if (permissions[PermissionGroup.storage] == PermissionStatus.granted) {
+          return true;
+        }
+      } else {
+        return true;
+      }
+    } else {
+      return true;
+    }
+    return false;
+  }
+
+  Future<Null> _prepare() async {
+    _permissionReady = await _checkPermission();
+
+    _localPath = (await _findLocalPath()) + Platform.pathSeparator + 'Download';
+
+    final savedDir = Directory(_localPath);
+    bool hasExisted = await savedDir.exists();
+    if (!hasExisted) {
+      savedDir.create();
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  Future<String> _findLocalPath() async {
+    final directory = Platform.isAndroid
+        ? await getExternalStorageDirectory()
+        : await getApplicationDocumentsDirectory();
+    return directory.path;
   }
 
   getPropertyDetails() async {
@@ -55,7 +112,12 @@ class _PropertyDetailsState extends State<PropertyDetails> {
     maxBudget = responsePropertyDetail['max_budget']
         .toString()
         .replaceAllMapped(reg, mathFunc);
-    file = responsePropertyDetail['file'];
+    if (responsePropertyDetail['project_master_file'] != null) {
+      file = responsePropertyDetail['project_master_file'][0]['file'];
+    } else {
+      file = '';
+    }
+
     latitude = responsePropertyDetail['latitude'];
     longitude = responsePropertyDetail['longitude'];
     location = responsePropertyDetail['location'];
@@ -82,7 +144,7 @@ class _PropertyDetailsState extends State<PropertyDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: Colors.grey,
+      backgroundColor: Colors.white70,
       resizeToAvoidBottomPadding: false,
       body: propertyType != null
           ? SingleChildScrollView(
@@ -166,7 +228,7 @@ class _PropertyDetailsState extends State<PropertyDetails> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              widget.propertyName,
+                              widget.propertyName.toUpperCase(),
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 25.0,
@@ -207,6 +269,14 @@ class _PropertyDetailsState extends State<PropertyDetails> {
                       height: 230.0,
                       width: MediaQuery.of(context).size.width,
                       decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage("assets/images/homepage-bg-2.jpg"),
+                          fit: BoxFit.cover,
+                          colorFilter: ColorFilter.mode(
+                            Colors.white.withOpacity(0.3),
+                            BlendMode.dstATop,
+                          ),
+                        ),
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(25.0),
                         boxShadow: [
@@ -328,6 +398,179 @@ class _PropertyDetailsState extends State<PropertyDetails> {
                       ),
                     ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8.0,
+                      vertical: 8.0,
+                    ),
+                    child: GestureDetector(
+                      onTap: () async {
+                        final taskId = await FlutterDownloader.enqueue(
+                          url: API().apiURL + file,
+                          savedDir: _localPath,
+                          showNotification: true,
+                          openFileFromNotification: true,
+                        );
+                        print(taskId);
+                        if (taskId != null) {
+                          final snackBar = SnackBar(
+                            behavior: SnackBarBehavior.floating,
+                            content: Text('Downloading file...'),
+                            duration: Duration(seconds: 3),
+                            backgroundColor: Colors.green,
+                          );
+                          _scaffoldKey.currentState.showSnackBar(snackBar);
+                          Timer(new Duration(seconds: 3), () async {
+                            _scaffoldKey.currentState.hideCurrentSnackBar();
+                          });
+                        }
+                        // FlutterDownloader.open(taskId: taskId);
+                      },
+                      child: Container(
+                        height: 60.0,
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10.0),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black38,
+                              offset: Offset(0.0, 2.0),
+                              blurRadius: 6.0,
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Center(
+                              child: Text(
+                                'Download property documents'.toUpperCase(),
+                                style: TextStyle(
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.blue,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8.0,
+                      vertical: 18.0,
+                    ),
+                    child: Column(
+                      children: <Widget>[
+                        Container(
+                          height: 300.0,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(25.0),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black38,
+                                offset: Offset(0.0, 2.0),
+                                blurRadius: 6.0,
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8.0,
+                                  vertical: 18.0,
+                                ),
+                                child: Column(
+                                  children: <Widget>[
+                                    Text(
+                                      'Other property images'.toUpperCase(),
+                                      style: TextStyle(
+                                        fontSize: 18.0,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              CarouselSlider.builder(
+                                itemCount: propertyPhotos.length,
+                                itemBuilder:
+                                    (BuildContext context, int itemIndex) {
+                                  return Container(
+                                    margin: EdgeInsets.all(5.0),
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: NetworkImage(API().apiURL +
+                                            propertyPhotos[itemIndex]['image']),
+                                        fit: BoxFit.cover,
+                                      ),
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black38,
+                                          offset: Offset(0.0, 2.0),
+                                          blurRadius: 6.0,
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                                viewportFraction: 0.9,
+                                initialPage: 0,
+                                enableInfiniteScroll: true,
+                                reverse: false,
+                                autoPlay: true,
+                                autoPlayInterval: Duration(seconds: 3),
+                                autoPlayAnimationDuration:
+                                    Duration(milliseconds: 800),
+                                autoPlayCurve: Curves.fastOutSlowIn,
+                                pauseAutoPlayOnTouch: Duration(seconds: 10),
+                                enlargeCenterPage: true,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8.0,
+                      vertical: 18.0,
+                    ),
+                    child: Column(
+                      children: <Widget>[
+                        SizedBox(
+                          width: double.infinity,
+                          child: RaisedButton(
+                            color: Colors.black87,
+                            padding: const EdgeInsets.all(15.0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(10.0),
+                              side: BorderSide(color: Colors.black87),
+                            ),
+                            child: Text(
+                              'SEND INQUIRY',
+                              style: TextStyle(
+                                fontSize: 20.0,
+                                color: Colors.white,
+                              ),
+                            ),
+                            onPressed: () {
+                              print('Send Inquiry');
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             )
@@ -336,6 +579,14 @@ class _PropertyDetailsState extends State<PropertyDetails> {
                 backgroundColor: Colors.transparent,
               ),
             ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.home),
+        backgroundColor: JustHomm().homeButton,
+        elevation: 15.0,
+        onPressed: () {
+          Navigator.pop(context);
+        },
+      ),
     );
   }
 }

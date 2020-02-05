@@ -43,7 +43,6 @@ class _PropertyListState extends State<PropertyList> {
   List<PropertyList> propertyItems = [];
   ScrollController _scrollController;
   bool _isOnTop = true;
-  bool doSplit = true;
 
   @override
   void initState() {
@@ -61,14 +60,12 @@ class _PropertyListState extends State<PropertyList> {
           ScrollDirection.reverse) {
         setState(() {
           _isOnTop = false;
-          doSplit = false;
         });
       } else {
         if (_scrollController.position.userScrollDirection ==
             ScrollDirection.forward) {
           setState(() {
             _isOnTop = false;
-            doSplit = false;
           });
         }
       }
@@ -89,7 +86,6 @@ class _PropertyListState extends State<PropertyList> {
     );
     setState(() {
       _isOnTop = true;
-      doSplit = false;
     });
   }
 
@@ -98,6 +94,10 @@ class _PropertyListState extends State<PropertyList> {
     print(fullName);
     if (fullName != null) {
       if (fullName == 'error') {
+        Common().writeData('loggedin', '');
+        Common().writeData('sid', '');
+        Common().writeData('mobile', '');
+        Common().writeData('userrole', '');
         await Common().logOut();
         Navigator.pushNamedAndRemoveUntil(
           context,
@@ -126,6 +126,13 @@ class _PropertyListState extends State<PropertyList> {
       propertyItems = new List<PropertyList>();
       for (var i = 0; i < responsePropertyData.length; i++) {
         // print(responsePropertyData[i]['project_name']);
+        if (responsePropertyData[i]['_user_tags'] != null) {
+          var userTagsSplit = responsePropertyData[i]['_user_tags'].split(',');
+          userTagsSplit.remove('');
+          responsePropertyData[i]['_user_tags'] = userTagsSplit.join(', ');
+        } else {
+          responsePropertyData[i]['_user_tags'] = 'N/A';
+        }
         propertyItems.add(
           PropertyList(
             project_name: responsePropertyData[i]['project_name'],
@@ -137,9 +144,7 @@ class _PropertyListState extends State<PropertyList> {
           ),
         );
       }
-      setState(() {
-        // doSplit = false;
-      });
+      setState(() {});
     }
   }
 
@@ -180,13 +185,6 @@ class _PropertyListState extends State<PropertyList> {
                 itemCount: propertyItems.length,
                 itemBuilder: (context, index) {
                   final property = propertyItems[index];
-                  if (doSplit) {
-                    if (property.user_tags != null) {
-                      property.user_tags = property.user_tags.substring(1);
-                    } else {
-                      property.user_tags = 'N/A';
-                    }
-                  }
                   return Padding(
                     padding: const EdgeInsets.symmetric(
                       vertical: 10.0,
@@ -203,9 +201,6 @@ class _PropertyListState extends State<PropertyList> {
                                 ),
                                 child: Column(
                                   children: <Widget>[
-                                    SizedBox(
-                                      height: 15.0,
-                                    ),
                                     Text(
                                       '${propertyItems.length} properties found near you',
                                       style: TextStyle(
@@ -214,7 +209,7 @@ class _PropertyListState extends State<PropertyList> {
                                       ),
                                     ),
                                     SizedBox(
-                                      height: 15.0,
+                                      height: 8.0,
                                     ),
                                   ],
                                 ),
@@ -226,9 +221,6 @@ class _PropertyListState extends State<PropertyList> {
                             children: <Widget>[
                               GestureDetector(
                                 onTap: () {
-                                  setState(() {
-                                    doSplit = false;
-                                  });
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(

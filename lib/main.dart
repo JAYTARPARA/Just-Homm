@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:justhomm/other-pages/change-password.dart';
 import 'package:justhomm/user-setup/homepage.dart';
 import 'package:justhomm/user-setup/login.dart';
@@ -14,6 +15,7 @@ void main() async {
     "mobile": "",
   };
   await GlobalConfiguration().loadFromMap(justhomm);
+  await FlutterDownloader.initialize();
   runApp(JustHomm());
 }
 
