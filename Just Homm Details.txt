@@ -52,5 +52,8 @@ max_budget
 _user_tags
 file
 property_photo-image
-latitude
-longitude
+latitude - 21.2243865579304
+longitude - 72.8268322348595
+
+
+AIzaSyC5jhfZEHc0SEd4s8u3DneJodx5eRKQew4

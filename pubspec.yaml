@@ -43,6 +43,9 @@ dependencies:
   permission_handler: ^4.2.0+hotfix.3
   path_provider: ^1.6.0
   carousel_slider: ^1.4.1
+  google_maps_flutter: ^0.5.22+1
+  gallery_saver: ^1.0.7
+  advanced_share: ^0.1.0
 
 dev_dependencies:
   flutter_test:

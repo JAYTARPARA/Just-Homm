@@ -56,17 +56,30 @@ class _PropertyListState extends State<PropertyList> {
     Future.delayed(Duration.zero, this.checkUser);
     _scrollController = ScrollController();
     _scrollController.addListener(() {
+      // print(_scrollController.position.pixels);
       if (_scrollController.position.userScrollDirection ==
           ScrollDirection.reverse) {
-        setState(() {
-          _isOnTop = false;
-        });
-      } else {
-        if (_scrollController.position.userScrollDirection ==
-            ScrollDirection.forward) {
+        if (_scrollController.position.pixels <= 100.0) {
+          setState(() {
+            _isOnTop = true;
+          });
+        } else {
           setState(() {
             _isOnTop = false;
           });
+        }
+      } else {
+        if (_scrollController.position.userScrollDirection ==
+            ScrollDirection.forward) {
+          if (_scrollController.position.pixels <= 100.0) {
+            setState(() {
+              _isOnTop = true;
+            });
+          } else {
+            setState(() {
+              _isOnTop = false;
+            });
+          }
         }
       }
     });
@@ -94,10 +107,10 @@ class _PropertyListState extends State<PropertyList> {
     print(fullName);
     if (fullName != null) {
       if (fullName == 'error') {
-        Common().writeData('loggedin', '');
-        Common().writeData('sid', '');
-        Common().writeData('mobile', '');
-        Common().writeData('userrole', '');
+        await Common().writeData(
+          'loggedout',
+          'yes',
+        );
         await Common().logOut();
         Navigator.pushNamedAndRemoveUntil(
           context,

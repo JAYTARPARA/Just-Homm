@@ -89,6 +89,10 @@ class _ProfileState extends State<Profile> {
     pr.show();
     if (responseUserData == 'error') {
       pr.hide();
+      await Common().writeData(
+        'loggedout',
+        'yes',
+      );
       await Common().logOut();
       Navigator.pushNamedAndRemoveUntil(
         context,
